@@ -18,6 +18,7 @@ const { validateRegisterStudent, validateStudentIdParam } = require('../middlewa
 const { resolveSchool } = require('../middleware/schoolContext');
 const { requireAdminAuth } = require('../middleware/auth');
 const { auditContext } = require('../middleware/auditContext');
+const { bulkImportLimiter } = require('../middleware/rateLimiter');
 
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
 
@@ -25,7 +26,7 @@ router.use(resolveSchool);
 
 // Admin-only routes
 router.post('/', requireAdminAuth, validateRegisterStudent, registerStudent);
-router.post('/bulk', requireAdminAuth, express.json({ limit: '1mb' }), upload.single('file'), bulkImportStudents);
+router.post('/bulk', requireAdminAuth, bulkImportLimiter, express.json({ limit: '1mb' }), upload.single('file'), bulkImportStudents);
 router.get('/', requireAdminAuth, getAllStudents);
 
 // Public routes

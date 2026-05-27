@@ -39,4 +39,14 @@ const reminderTriggerLimiter = rateLimit({
   message: { error: 'Too many reminder trigger requests. Please wait before sending more reminders.', code: 'RATE_LIMIT_EXCEEDED' },
 });
 
-module.exports = { generalLimiter, strictLimiter, reminderTriggerLimiter, verifyLimiter };
+// Bulk import limiter — dedicated limiter for POST /api/students/bulk
+// Maximum 5 requests per hour per IP to prevent DoS via large CSV uploads
+const bulkImportLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many bulk import requests. Maximum 5 per hour allowed.', code: 'RATE_LIMIT_EXCEEDED' },
+});
+
+module.exports = { generalLimiter, strictLimiter, reminderTriggerLimiter, verifyLimiter, bulkImportLimiter };
