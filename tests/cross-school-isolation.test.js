@@ -1,7 +1,9 @@
 'use strict';
 
+// Set env vars BEFORE requiring app
 process.env.MONGO_URI = 'mongodb://localhost:27017/test';
 process.env.SCHOOL_WALLET_ADDRESS = 'GCICZOP346CKADPWOZ6JAQ7OCGH44UELNS3GSDXFOTSZRW6OYZZ6KSY7B';
+process.env.JWT_SECRET = 'test-secret-key-for-cross-school-tests';
 
 const request = require('supertest');
 
