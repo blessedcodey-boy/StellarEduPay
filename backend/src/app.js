@@ -28,6 +28,7 @@ const { startReminderScheduler, stopReminderScheduler } = require('./services/re
 const { startWorker: startTxQueueWorker, stopWorker: stopTxQueueWorker } = require('./services/transactionQueueService');
 const { startSessionCleanupScheduler, stopSessionCleanupScheduler } = require('./services/sessionCleanupService');
 const { startReconciliationScheduler, stopReconciliationScheduler } = require('./services/reconciliationService');
+const { startAuditLogCleanupScheduler, stopAuditLogCleanupScheduler } = require('./services/auditLogCleanupService');
 const { closeQueue } = require('./queue/transactionQueue');
 const bullMQRetryService = require('./services/bullMQRetryService');
 const { initializeRetryQueue, setupMonitoring } = require('./config/retryQueueSetup');
@@ -170,6 +171,7 @@ connectWithRetry().then(async () => {
   startReminderScheduler();
   startSessionCleanupScheduler();
   startReconciliationScheduler();
+  startAuditLogCleanupScheduler();
   registerPaymentSavedSubscribers();
 
   // Only initialise BullMQ when Redis is configured
@@ -205,6 +207,7 @@ async function shutdown(signal) {
   stopReminderScheduler();
   stopSessionCleanupScheduler();
   stopReconciliationScheduler();
+  stopAuditLogCleanupScheduler();
 
   try {
     await stopTxQueueWorker();
